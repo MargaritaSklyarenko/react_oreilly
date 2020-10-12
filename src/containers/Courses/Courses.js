@@ -49,7 +49,6 @@ export class Courses extends Component {
                 authors: [ "Maison Dewey", "Ernst Handel", "Rancho Grande"]
             }
         ]
-        
       };
 
   render() {
