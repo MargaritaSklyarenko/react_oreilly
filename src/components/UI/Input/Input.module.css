@@ -1,11 +1,13 @@
 .Input {
   width: 100;
   padding: 10px;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
 }
 
 .Label {
   font-weight: bold;
+  width: 15%;
   display: block;
   margin-bottom: 8px;
 }
@@ -17,7 +19,7 @@
   font: inherit;
   padding: 6px 10px;
   display: block;
-  width: 100%;
+  width: 85%;
   box-sizing: border-box;
 }
 

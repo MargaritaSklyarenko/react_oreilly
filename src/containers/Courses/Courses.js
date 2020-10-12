@@ -3,6 +3,7 @@ import Course from './Course/Course'
 import Logo from "../../components/Logo/Logo";
 import Button from "../../components/UI/Button/Button";
 import Search from "../../components/UI/Search/Search";
+import classes from "./Courses.module.css";
 
 export class Courses extends Component {
     state = {
@@ -53,7 +54,7 @@ export class Courses extends Component {
 
   render() {
     return (
-      <div >
+      <div className={classes.Courses}>
         <header>
           <Logo height="20%"/>
         </header>

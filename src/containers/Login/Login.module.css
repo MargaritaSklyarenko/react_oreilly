@@ -1,8 +1,9 @@
 .Login {
     padding: 60px 0;
+    width: 80%;
+    margin: auto;
   }
 
 .Login form {
     margin: 0 auto;
-    max-width: 320px;
 }

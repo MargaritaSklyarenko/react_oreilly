@@ -1,0 +1,11 @@
+.Courses {
+    padding: 60px 0;
+    width: 80%;
+    margin: auto;
+}
+
+.Courses nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

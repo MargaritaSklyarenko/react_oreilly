@@ -1,8 +1,9 @@
 import React from "react";
+import classes from "./Search.module.css";
 
 const Saerch = props => {
     return (
-        <input type="text" placeholder={props.placeholder}></input>
+        <input className={classes.Search} type="text" placeholder={props.placeholder}></input>
     );
 }
 

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import "./Login.css";
-import classes from "./Login.css";
+import classes from "./Login.module.css";
 import Input from "../../components/UI/Input/Input"
 import Button from "../../components/UI/Button/Button";
 import Logo from "../../components/Logo/Logo";
