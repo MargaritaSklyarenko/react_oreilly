@@ -2,11 +2,14 @@ import React from 'react';
 import Login from "./containers/Login/Login";
 import Courses from "./containers/Courses/Courses";
 import AddEdit from "./containers/AddEdit/AddEdit";
+import LocalhostService from "./components/LocalhostService/LocalhostService";
 import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
 import './App.css';
 
 function App() {
-  const loggedIn = false;
+  const localhostService = new LocalhostService();
+  const loggedIn = localhostService.getState().isLoggedIn;
+  
   return (
     <BrowserRouter>
       <Switch>
@@ -18,7 +21,6 @@ function App() {
         <Route path="/courses" component={Courses} />
       </Switch>
     </BrowserRouter>
-    
   );
 }
 

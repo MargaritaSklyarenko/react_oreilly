@@ -3,8 +3,11 @@ import classes from "./Login.module.css";
 import Input from "../../components/UI/Input/Input"
 import Button from "../../components/UI/Button/Button";
 import Logo from "../../components/Logo/Logo";
+import Axios from "../../components/Axios/Axios";
+import LocalhostService from "../../components/LocalhostService/LocalhostService";
 
 export class Login extends Component {
+  axios = new Axios();
   state = {
     loginForm: {
       login: {
@@ -40,8 +43,12 @@ export class Login extends Component {
         touched: false
       },
     },
+    usersUrl: "http://localhost:3001/api/login",
+    users: [],
     formIsValid: false
   };
+
+  localhostService = new LocalhostService();
 
   loginHandler = event => {
     event.preventDefault();
@@ -52,20 +59,16 @@ export class Login extends Component {
         formElementIdentifier
       ].value;
     }
-    this.props.history.push("/courses");
-    // console.log(formData);
-    /*const login = {
-      ingredients: this.props.ingredients,
-      price: this.props.price,
-      loginData: formData
-    };
-    axios
-      .post("/login.json", login)
-      .then(response => {
-        this.setState({ loading: false });
-        this.props.history.push("/");
+
+    this.axios.getUsers(this.state.loginForm.login.value, this.state.loginForm.password.value)
+      .then(() => {
+          this.localhostService.setState(this.state.loginForm.login.value, true);
+          this.props.history.push("/courses"); 
       })
-      .catch(error => this.setState({ loading: false }));*/
+      .catch(() => {
+        //mess
+      });
+
   };
 
   checkValidity = (value, rules) => {
@@ -124,7 +127,7 @@ export class Login extends Component {
             shouldValidate={formElement.config.validation}
           />
         ))}
-        <Button btnType="Success" disabled={!this.state.formIsValid}>
+        <Button btnType="Success" type="submit" disabled={!this.state.formIsValid}>
           Enter
         </Button>
         { !this.state.formIsValid &&

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component }  from "react";
 import DateFormatter from "../../../components/DateFormatter/DateFormatter";
 import Duration from "../../../components/Duration/Duration";
 import Description from "../../../components/Description/Description";
@@ -6,25 +6,26 @@ import Authors from "../../../components/Authors/Authors";
 import Button from "../../../components/UI/Button/Button";
 import classes from "./Course.module.css";
 
-const Course = props => {
-    console.log(props);
-    return (
-      <div className={classes.Course}> 
-        <div className={classes.CourseContent}>
-            <div>
-                <h1>{props.title}</h1>
-                <Duration duration={props.duration}></Duration>
-                <DateFormatter date={props.creationDate}></DateFormatter>
+class Course extends Component {
+    render() {
+        return (
+        <div className={classes.Course}> 
+            <div className={classes.CourseContent}>
+                <div>
+                    <h1>{this.props.title}</h1>
+                    <Duration duration={this.props.duration}></Duration>
+                    <DateFormatter date={this.props.creationDate}></DateFormatter>
+                </div>
+                <Description description={this.props.description}></Description>
+                {/*<Authors authors={props.authors}></Authors>*/}
             </div>
-            <Description description={props.description}></Description>
-            {/*<Authors authors={props.authors}></Authors>*/}
+            <div className={classes.Buttons}>
+                <Button btnType="Regular" clicked={this.props.editClicked}>Edit course</Button>
+                <Button btnType="Regular" clicked={this.props.deleteClicked}>Delete course</Button>
+            </div>
         </div>
-        <div className={classes.Buttons}>
-            <Button btnType="Regular">Edit course</Button>
-            <Button btnType="Regular">Delete course</Button>
-        </div>
-    </div>
-    );
+        );
+    }
 }
 
 export default Course;

@@ -1,6 +1,6 @@
 [
     {
-        "id": "1",
+        "id": "0",
         "title": "From Zero to RHCSA",
         "creationDate": "2000-01-03T00:00:00.000Z",
         "duration": 15,
@@ -8,7 +8,7 @@
         "authors": [ "Chop-suey Chinese", "Alfreds Futterkiste"]
     },
     {
-        "id": "2",
+        "id": "1",
         "title": "InnerSource",
         "creationDate": "2012-04-23T00:00:00.000Z",
         "duration": 23,
@@ -16,7 +16,7 @@
         "authors": [ "Ernst Handel", "Chop-suey Chinese", "Maison Dewey"]
     },
     {
-        "id": "3",
+        "id": "2",
         "title": "Red Hat RHCSA 8",
         "creationDate": "2000-10-21T00:00:00.000Z",
         "duration": 105,
@@ -24,11 +24,11 @@
         "authors": [ "Alfreds Futterkiste"]
     },
     {
-        "id": "4",
+        "id": "3",
         "title": "Introduction to Blockchain Technology",
         "creationDate": "1976-01-04T00:00:00.000Z",
         "duration": 60,
-        "Description": "Blockchain technology is among the most exciting developments in the IT industry in many years. Often shrouded in mystery (including who the person is who developed it), today blockchain is most well known as the technology that underpins cryptocurrencies, the most famous of those being Bitcoin. But blockchain’s distributed-ledger technology holds the promise to revolutionize the way businesses and governments create and maintain important records of transactions of all kinds, whether it’s contracts, deeds, or any other types of activity for which an inviolable record must be maintained.",
+        "description": "Blockchain technology is among the most exciting developments in the IT industry in many years. Often shrouded in mystery (including who the person is who developed it), today blockchain is most well known as the technology that underpins cryptocurrencies, the most famous of those being Bitcoin. But blockchain’s distributed-ledger technology holds the promise to revolutionize the way businesses and governments create and maintain important records of transactions of all kinds, whether it’s contracts, deeds, or any other types of activity for which an inviolable record must be maintained.",
         "authors": [ "Maison Dewey", "Ernst Handel", "Rancho Grande"]
     }
 ]
