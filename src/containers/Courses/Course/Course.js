@@ -1,19 +1,20 @@
 import React from "react";
-import Date from "../../../components/Date/Date";
-import Duration from "../../../components/Description/Duration/Duration";
+import DateFormatter from "../../../components/DateFormatter/DateFormatter";
+import Duration from "../../../components/Duration/Duration";
 import Description from "../../../components/Description/Description";
 import Authors from "../../../components/Authors/Authors";
 import Button from "../../../components/UI/Button/Button";
 import classes from "./Course.module.css";
 
 const Course = props => {
+    console.log(props);
     return (
       <div className={classes.Course}> 
         <div className={classes.CourseContent}>
             <div>
                 <h1>{props.title}</h1>
-                <Date date={props.cretionDate}></Date>
                 <Duration duration={props.duration}></Duration>
+                <DateFormatter date={props.creationDate}></DateFormatter>
             </div>
             <Description description={props.description}></Description>
             {/*<Authors authors={props.authors}></Authors>*/}
