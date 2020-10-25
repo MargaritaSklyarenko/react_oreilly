@@ -2,7 +2,6 @@ import React, { Component }  from "react";
 import DateFormatter from "../../../components/DateFormatter/DateFormatter";
 import Duration from "../../../components/Duration/Duration";
 import Description from "../../../components/Description/Description";
-import Authors from "../../../components/Authors/Authors";
 import Button from "../../../components/UI/Button/Button";
 import classes from "./Course.module.css";
 

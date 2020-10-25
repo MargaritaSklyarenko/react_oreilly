@@ -1,0 +1,26 @@
+.Input {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .Label {
+    font-weight: bold;
+    width: 15%;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .Container {
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+    margin: auto;
+  }
+
+  .OneRow {
+    display: flex;
+    flex-direction: row;
+  }

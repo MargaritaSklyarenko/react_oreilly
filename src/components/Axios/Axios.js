@@ -19,11 +19,11 @@ class Axios {
     }
 
     editCourse (id, course) {
-        return axios.put(this.state.usersUrl + '/' + id, course);
+        return axios.put(this.state.coursesUrl + '/' + id, course);
     }
 
     addCourse (course) {
-        return axios.post(this.state.usersUrl, course);
+        return axios.post(this.state.coursesUrl, course);
     }
 
     deleteCourse (id) {

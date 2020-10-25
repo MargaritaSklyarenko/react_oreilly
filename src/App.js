@@ -18,6 +18,7 @@ function App() {
         )}/>
         <Route path="/login" component={Login} />
         <Route path="/courses/new" component={AddEdit} />
+        <Route exact path="/courses/:id" component={AddEdit} />
         <Route path="/courses" component={Courses} />
       </Switch>
     </BrowserRouter>

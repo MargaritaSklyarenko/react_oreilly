@@ -4,12 +4,21 @@ import Logo from "../../components/Logo/Logo";
 import Button from "../../components/UI/Button/Button";
 import Axios from "../../components/Axios/Axios";
 import LocalhostService from "../../components/LocalhostService/LocalhostService";
-import  { Redirect } from 'react-router-dom'
+import PropTypes from 'prop-types';
+import { connect } from "react-redux";
 import classes from "./Courses.module.css";
+import * as actionTypes from "../../store/actions";
+import { withRouter } from "react-router";
 
 export class Courses extends Component {
   axios = new Axios();
   localhostService = new LocalhostService();
+
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  };
   
   state = {
     courses: [],
@@ -22,27 +31,27 @@ export class Courses extends Component {
   }
 
   updateUsers() {
-    this.axios.getCourses().then(res =>
-      this.setState({courses: res.data })
+    this.axios.getCourses().then(res => {
+        this.setState({courses: res.data })
+        this.props.onSetCourses(res.data);
+      }
     );
   }
 
-  deletePostHandler = (event, id) => {
-    console.log(event.target.value);
+  deletePostHandler = (id) => {
+    this.props.onCourseRemoved(id);
     this.axios.deleteCourse(id).then(() => this.updateUsers());
   };
 
-  editPostHandler = (event, id) => {
-    console.log(event.target.value);
+  editPostHandler = (id) => {;
     //this.axios.editCourse(id).then(() => {
-    return <Redirect to={"/courses/:" + id}  />
-    //this.props.history.push("/courses/:" + id);
+    this.props.history.push("/courses/" + id);
     //});
   };
 
   addPostHaandler = () => {
-    return <Redirect to='/courses/new' />
-    // this.props.history.push("/courses/new"); Doees not work((
+    // withRouter hock 
+    this.props.history.push("/courses/new");
   }
 
   searchCourse = () => {
@@ -92,14 +101,13 @@ export class Courses extends Component {
                     id={course.id}
                     title = {course.title}
                     creationDate = {course.creationDate}
-                    deleteClicked={event => this.editPostHandler(event, course.id)}
-                    editClicked={event => this.deletePostHandler(event, course.id)}
+                    editClicked={id => this.editPostHandler(course.id)}
+                    deleteClicked={id => this.deletePostHandler(course.id)}
                     duration = {course.duration}
                     description = {course.description}
                     authors = {course.authors}
                 />
                 ))}
-
             </div>
         </main>
       </div>
@@ -107,4 +115,28 @@ export class Courses extends Component {
   }
 }
 
-export default Courses;
+const mapStateToProps = state => {
+  return {
+    courses: state.courses
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onCourseRemoved: (id) => 
+      dispatch({ type: actionTypes.REMOVE_COURSE, courseId: id }),
+    onSetCourses: (courses) => 
+      dispatch({ type: actionTypes.SET_COURSES, courses: courses })
+  };
+};
+
+const ShowCoursesWithRouter = withRouter(Courses)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShowCoursesWithRouter);
+
+/*
+const ShowCoursesWithRouter = withRouter(Courses);
+export default Courses;*/
