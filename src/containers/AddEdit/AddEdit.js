@@ -16,9 +16,9 @@ export class AddEdit extends Component {
     axios = new Axios();
     state = {
         id: this.props.match.params.id,
-        startDate: new Date(),
         addEditForm: {
             title: {
+              name: "title",
               elementType: "input",
               label: "Title",
               elementConfig: {
@@ -28,6 +28,7 @@ export class AddEdit extends Component {
               value: ""
             },
             description: {
+              name: "description",
               elementType: "input",
               label: "Description",
               elementConfig: {
@@ -37,15 +38,17 @@ export class AddEdit extends Component {
               value: ""
             },
             creationDate: {
+                name: "creationDate",
                 elementType: "",
                 label: "Creation date",
                 elementConfig: {
                   type: "text",
                   placeholder: "Enter creation date"
                 },
-                value: ""
+                value: new Date()
               },
             duration: {
+                name: "duration",
                 elementType: "input",
                 label: "Duration",
                 elementConfig: {
@@ -55,6 +58,7 @@ export class AddEdit extends Component {
                 value: ""
               },
             authors: {
+                name: "authors",
                 elementType: "",
                 label: "Authors",
                 elementConfig: {
@@ -63,18 +67,21 @@ export class AddEdit extends Component {
                 },
                 value: ""
               }
+          },
+          newValues: {
+            title: "",
+            description: "",
+            creationDate: new Date(),
+            duration: "",
+            authors: []
           }
     };
 
   componentDidMount() {
-    
-
-
-    // <DatePicker selected={new Date(moment(this.state.addEditForm.creationDate.value).format("DD.MM.YYYY"))} onChange={date => this.setState({startDate: date })} />
     if (this.state.id !== "" && !!this.props.storedCourses) {
-        let course = this.props.storedCourses.find((course) => course.id === (this.state.id ));
+        const course = this.props.storedCourses.find((course) => course.id === (this.state.id ));
         const updatedAddEditForm= { ...this.state.addEditForm };
-
+        const updatedNewValues = { ...this.state.newValues };
 
         if(!course) {
           return;
@@ -82,21 +89,30 @@ export class AddEdit extends Component {
 
         updatedAddEditForm.title.value = course.title;
         updatedAddEditForm.description.value = course.description;
-        updatedAddEditForm.creationDate.value = course.creationDate;
+        updatedAddEditForm.creationDate.value = moment(course.creationDate).format("MM.DD.YYYY");
         updatedAddEditForm.duration.value = course.duration;
         updatedAddEditForm.authors.value = course.authors;
+        updatedNewValues.title = course.title;
+        updatedNewValues.description = course.description;
+        updatedNewValues.creationDate = moment(course.creationDate).format("MM.DD.YYYY");
+        updatedNewValues.duration = course.duration;
+        updatedNewValues.authors = course.authors;
 
-        this.setState({addEditForm: updatedAddEditForm });
+        this.setState({addEditForm: updatedAddEditForm, newValues: updatedNewValues });
     }
+  }
+
+  setNewVal(field, event) {
+    let val = field === "creationDate" ? moment(event).format("MM.DD.YYYY") : event.target.value
+    const updatedNewValues = { ...this.state.newValues };
+
+    updatedNewValues[field] = val;
+
+    this.setState({newValues: updatedNewValues });
   }
 
   render() {
     const formElementsArray = [];
-    console.log(new Date('12.1.1995'));
-    console.log(this.state.addEditForm.creationDate.value);
-    console.log( moment(this.state.addEditForm.creationDate.value).format("MM.DD.YYYY"));
-    console.log((Date.parse("1.10.2000")));
-    console.log((new Date(moment(this.state.addEditForm.creationDate.value).format("MM.DD.YYYY"))));
     for (let key in this.state.addEditForm) {
       formElementsArray.push({
         id: key,
@@ -115,8 +131,8 @@ export class AddEdit extends Component {
                     elementType={formElement.config.elementType}
                     elementConfig={formElement.config.elementConfig}
                     label={formElement.config.label}
-                    value={formElement.config.value}
-                    changed={()=>{}}
+                    value={this.state.newValues[formElement.config.name]}
+                    changed={data => this.setNewVal(formElement.config.name, data)}
                   />
                   {this.state.id !== "" && !!formElement.config.value && <Duration duration={formElement.config.value}></Duration>}
                 </div>
@@ -128,8 +144,8 @@ export class AddEdit extends Component {
                   elementType={formElement.config.elementType}
                   elementConfig={formElement.config.elementConfig}
                   label={formElement.config.label}
-                  value={formElement.config.value}
-                  changed={()=>{}}
+                  value={this.state.newValues[formElement.config.name]}
+                  changed={data => this.setNewVal(formElement.config.name, data)}
                 />
             );
           }
@@ -138,7 +154,8 @@ export class AddEdit extends Component {
         <div className={classes.Container && classes.OneRow} style={{padding: "10px"}}>
           <label className={classes.Label}>{this.state.addEditForm.creationDate.label}</label>
           {!!this.state.addEditForm.creationDate.value &&
-          <DatePicker selected={(new Date(moment(this.state.addEditForm.creationDate.value).format("MM.DD.YYYY")))} onChange={date => this.setState({startDate: date })} />}  
+            <DatePicker selected={(new Date(this.state.newValues[this.state.addEditForm.creationDate.name]))}
+            onChange={date => this.setNewVal(this.state.addEditForm.creationDate.name, date)} />}  
         </div>
         
         <div>
