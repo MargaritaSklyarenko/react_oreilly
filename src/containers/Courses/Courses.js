@@ -44,9 +44,7 @@ export class Courses extends Component {
   };
 
   editPostHandler = (id) => {;
-    //this.axios.editCourse(id).then(() => {
     this.props.history.push("/courses/" + id);
-    //});
   };
 
   addPostHaandler = () => {

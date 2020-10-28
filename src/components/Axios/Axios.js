@@ -18,8 +18,8 @@ class Axios {
         });
     }
 
-    editCourse (id, course) {
-        return axios.put(this.state.coursesUrl + '/' + id, course);
+    editCourse (course) {
+        return axios.put(this.state.coursesUrl + '/' + course.id, course);
     }
 
     addCourse (course) {
