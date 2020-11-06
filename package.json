@@ -40,9 +40,11 @@
   "devDependencies": {
     "axios": "^0.20.0",
     "concurrently": "^5.3.0",
+    "immutable": "^4.0.0-rc.12",
     "json-server": "^0.16.2",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
-    "redux-devtools": "^3.7.0"
+    "redux-devtools": "^3.7.0",
+    "reselect": "^4.0.0"
   }
 }

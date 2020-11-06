@@ -1,10 +1,19 @@
 import * as actionTypes from "./actions";
+// import { createSelector } from 'reselect';
 
-const initialState = {
-  courses: []
-};
+const { List } = require('immutable');
+const state = {};
 
-const reducer = (state = initialState, action) => {
+state.courses = List([]);
+
+const getCourses = state.courses;
+// const coursesSelector = state => state.get('courses');
+/*∂const coursesSelector = createSelector(
+    [getCourses],
+    (courses) => courses
+);*/
+
+const reducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_COURSES:
       return {
@@ -12,7 +21,7 @@ const reducer = (state = initialState, action) => {
       courses: action.courses
     };
     case actionTypes.REMOVE_COURSE:
-      const updatedArray = state.courses.filter(
+      const updatedArray = getCourses.filter(
         course => course.id !== action.courseId
       );
       return {
@@ -23,5 +32,7 @@ const reducer = (state = initialState, action) => {
       return state;
   }
 };
+
+// console.log(coursesSelector(state))   
 
 export default reducer;

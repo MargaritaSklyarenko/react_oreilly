@@ -1,97 +1,99 @@
-import React, { Component } from "react";
+
+import React, { useEffect, useState, useCallback } from "react";
 import Course from './Course/Course'
 import Logo from "../../components/Logo/Logo";
 import Button from "../../components/UI/Button/Button";
 import Axios from "../../components/Axios/Axios";
 import LocalhostService from "../../components/LocalhostService/LocalhostService";
+import * as actions from "../../store/courses";
+import { useDispatch } from "react-redux";
 import PropTypes from 'prop-types';
-import { connect } from "react-redux";
 import classes from "./Courses.module.css";
-import * as actionTypes from "../../store/actions";
 import { withRouter } from "react-router";
 
-export class Courses extends Component {
-  axios = new Axios();
-  localhostService = new LocalhostService();
+const Courses = props =>  {
+  const axios = new Axios();
+  const localhostService = new LocalhostService();
+ 
+  const propTypes = {
+      match: PropTypes.object.isRequired,
+      location: PropTypes.object.isRequired,
+      history: PropTypes.object.isRequired
+    };
+    
+  const dispatch = useDispatch();
 
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
-  
-  state = {
-    courses: [],
-    showFilteredValue: false,
-    searchValue: ""
-  };
+  const onCourseRemoved = useCallback(id => dispatch(actions.removeCourse(id)), [dispatch]);
+  const onSetCourses = useCallback(courses => dispatch(actions.setCourses(courses)), [dispatch]);
 
-  componentDidMount() {
-    this.updateUsers();
-  }
+  const [courses, setCourses] = useState([]);
+  const [showFilteredValue, setShowFilteredValue] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
-  updateUsers() {
-    this.axios.getCourses().then(res => {
-        this.setState({courses: res.data })
-        this.props.onSetCourses(res.data);
+  useEffect(() => {
+    updateUsers();
+  }, [onCourseRemoved, onSetCourses]);
+
+  const updateUsers = () => {
+    axios.getCourses().then(res => {
+      setCourses(res.data)
+      onSetCourses(res.data);
       }
     );
   }
 
-  deletePostHandler = (id) => {
-    this.props.onCourseRemoved(id);
-    this.axios.deleteCourse(id).then(() => this.updateUsers());
+  const deletePostHandler = (id) => {
+    onCourseRemoved(id);
+    axios.deleteCourse(id).then(() => updateUsers());
   };
 
-  editPostHandler = (id) => {;
-    this.props.history.push("/courses/" + id);
+  const editPostHandler = (id) => {;
+    props.history.push("/courses/" + id);
   };
 
-  addPostHaandler = () => {
+  const addPostHaandler = () => {
     // withRouter hock 
-    this.props.history.push("/courses/new");
+    props.history.push("/courses/new");
   }
 
-  searchCourse = () => {
-    this.setState({ showFilteredValue: true });
-
-    console.log(this.state);
+  const searchCourse = () => {
+    setShowFilteredValue(true);
   }
 
-  logOut = () => {
-    this.localhostService.setState("", false);
+  const logOut = () => {
+    localhostService.setState("", false);
   };
 
-  updateInputValue = (evt) => {
-    this.setState({searchValue: evt.target.value })
+  const updateInputValue = (evt) => {
+    setSearchValue(evt.target.value)
   };
 
-  render() {
+  
     return (
       <div className={classes.Courses}>
         <header>
           <Logo height="20%"/>
           <div>
-            <p>{this.localhostService.getState().userName}</p>
-            <a href='/login' onClick={this.logOut} >log off</a>
+            <p>{localhostService.getState().userName}</p>
+            <a href='/login' onClick={logOut} >log off</a>
           </div>
         </header>
         <nav>
             <div>   
-                <input className={classes.Search} value={this.state.searchValue} type="text" placeholder="Search by title" onChange={this.updateInputValue}></input>
-                <Button btnType="Regular" clicked = {this.searchCourse} >Search</Button>
+                <input className={classes.Search} value={searchValue} type="text" placeholder="Search by title" onChange={updateInputValue}></input>
+                <Button btnType="Regular" clicked = {searchCourse} >Search</Button>
             </div>
-          <Button btnType="Regular" clicked = {this.addPostHaandler}>Add course</Button>
+          <Button btnType="Regular" clicked = {addPostHaandler}>Add course</Button>
         </nav>
         <main>
             <div>
                 {  
-                this.state.courses
+                courses
                   .filter(course => {
-                    if( !this.state.showFilteredValue || this.state.searchValue === "") {
+                    if( !showFilteredValue || searchValue === "") {
                       return true;
                     }
-                    return course.title === this.state.searchValue;
+                    return course.title === searchValue;
                   })
                   .map(course => (
                   <Course
@@ -99,8 +101,8 @@ export class Courses extends Component {
                     id={course.id}
                     title = {course.title}
                     creationDate = {course.creationDate}
-                    editClicked={id => this.editPostHandler(course.id)}
-                    deleteClicked={id => this.deletePostHandler(course.id)}
+                    editClicked={id => editPostHandler(course.id)}
+                    deleteClicked={id => deletePostHandler(course.id)}
                     duration = {course.duration}
                     description = {course.description}
                     authors = {course.authors}
@@ -110,30 +112,12 @@ export class Courses extends Component {
         </main>
       </div>
     );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    courses: state.courses
   };
-};
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onCourseRemoved: (id) => 
-      dispatch({ type: actionTypes.REMOVE_COURSE, courseId: id }),
-    onSetCourses: (courses) => 
-      dispatch({ type: actionTypes.SET_COURSES, courses: courses })
-  };
-};
 
 const ShowCoursesWithRouter = withRouter(Courses)
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ShowCoursesWithRouter);
+export default ShowCoursesWithRouter;
 
 /*
 const ShowCoursesWithRouter = withRouter(Courses);

@@ -1,86 +1,93 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../components/Logo/Logo";
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input"
 import Axios from "../../components/Axios/Axios";
 import LocalhostService from "../../components/LocalhostService/LocalhostService";
-import * as actionTypes from "../../store/actions";
 import classes from "./AddEdit.module.css"
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import Duration from "../../components/Duration/Duration";
 
 import moment from 'moment'
 
 
-export class AddEdit extends Component {
-    axios = new Axios();
-    localhostService = new LocalhostService();
-    state = {
-        addEditForm: {
-            title: {
-              name: "title",
-              elementType: "input",
-              label: "Title",
+const AddEdit = props => {
+
+    const axios = new Axios();
+    const localhostService = new LocalhostService();
+    
+    const storedCourses = useSelector(state => {
+      return state.courses;
+    });
+
+    const [addEditForm, setAddEditForm] = useState({
+      
+          title: {
+            name: "title",
+            elementType: "input",
+            label: "Title",
+            elementConfig: {
+              type: "text",
+              placeholder: "Enter title"
+            }
+          },
+          description: {
+            name: "description",
+            elementType: "input",
+            label: "Description",
+            elementConfig: {
+              type: "Enter description",
+              placeholder: "Enter description"
+            }
+          },
+          creationDate: {
+              name: "creationDate",
+              elementType: "",
+              label: "Creation date",
               elementConfig: {
                 type: "text",
-                placeholder: "Enter title"
+                placeholder: "Enter creation date"
               }
             },
-            description: {
-              name: "description",
+          duration: {
+              name: "duration",
               elementType: "input",
-              label: "Description",
+              label: "Duration",
               elementConfig: {
-                type: "Enter description",
-                placeholder: "Enter description"
+                type: "number",
+                placeholder: "Enter duration"
               }
             },
-            creationDate: {
-                name: "creationDate",
-                elementType: "",
-                label: "Creation date",
-                elementConfig: {
-                  type: "text",
-                  placeholder: "Enter creation date"
-                }
-              },
-            duration: {
-                name: "duration",
-                elementType: "input",
-                label: "Duration",
-                elementConfig: {
-                  type: "number",
-                  placeholder: "Enter duration"
-                }
-              },
-            authors: {
-                name: "authors",
-                elementType: "",
-                label: "Authors",
-                elementConfig: {
-                  type: "text",
-                  placeholder: "Enter authors"
-                }
+          authors: {
+              name: "authors",
+              elementType: "",
+              label: "Authors",
+              elementConfig: {
+                type: "text",
+                placeholder: "Enter authors"
               }
-          },
-          values: {
-            id: this.props.match.params.id || "",
-            title: "",
-            description: "",
-            creationDate: new Date(),
-            duration: "",
-            authors: []
-          },
-          displayErrModal: false
-    };
+            }
+        });
 
-  componentDidMount() {
-    if (this.state.values.id !== "" && !!this.props.storedCourses) {
+       const [values, setValues] = useState({
+          id: props.match.params.id || "",
+          title: "",
+          description: "",
+          creationDate: new Date(),
+          duration: "",
+          authors: []
+        });
+        
+  const [displayErrModal, setDisplayErrModal] = useState(false);
+
+  useEffect(() => {
+    console.log(addEditForm, values, storedCourses);
+    if (values.id !== "" && !!storedCourses) {
       // use memo and selector 
-        const course = this.props.storedCourses.find((course) => course.id === (this.state.values.id ));
-        const updatedAddEditForm= { ...this.state.addEditForm };
-        const updatedvalues = { ...this.state.values };
+        const course = storedCourses.find((course) => course.id === (values.id ));
+        const updatedAddEditForm= { ...addEditForm };
+        const updatedvalues = { ...values };
 
         if(!course) {
           return;
@@ -92,58 +99,57 @@ export class AddEdit extends Component {
         updatedvalues.duration = course.duration;
         updatedvalues.authors = course.authors;
 
-        this.setState({addEditForm: updatedAddEditForm, values: updatedvalues });
+        setAddEditForm(updatedAddEditForm);
+        setValues(updatedvalues);
+        
     }
-  }
+  }, []);
 
-  setNewVal(field, event) {
+  const setNewVal = (field, event) => {
     let val = field === "creationDate" ? moment(event).format("MM.DD.YYYY") : event.target.value;
-    const updatedvalues = { ...this.state.values };
+    const updatedvalues = { ...values };
 
     updatedvalues[field] = val;
-    this.setState({values: updatedvalues });
-  }
+    setValues(updatedvalues);
+  };
 
-  saveHandler = (event) => {
+  const saveHandler = (event) => {
 
     event.preventDefault();
-    const course = { ...this.state.values };
-    this.setState({displayErrModal: false });
-
-    
+    const course = { ...values };
+    setDisplayErrModal(false);
     
     for (let prop in course) {
       if( course[prop] === "" && prop !== "id") {
-        return this.setState({displayErrModal: true });
+        return setDisplayErrModal(true);
       } 
     }
 
-    if (this.state.values.id === "" && !!this.props.storedCourses.length) {
-      return this.axios.addCourse(course).then(() => this.props.history.push("/courses"));  
+    if (values.id === "") {
+      return axios.addCourse(course).then(() => props.history.push("/courses"));  
     }
 
-    this.axios.editCourse(course).then(() => this.props.history.push("/courses"));
+    axios.editCourse(course).then(() => props.history.push("/courses"));
     // doesn't redirect for some reason, fails but updates course
   };
 
-  logOut = () => {
-    this.localhostService.setState("", false);
+  const logOut = () => {
+    localhostService.setState("", false);
   };
 
-  cancelHandler = () => {
-    this.props.history.push("/courses/");
+  const cancelHandler = () => {
+    props.history.push("/courses/");
   }
 
-  render() {
     const formElementsArray = [];
-    for (let key in this.state.addEditForm) {
+    for (let key in addEditForm) {
       formElementsArray.push({
         id: key,
-        config: this.state.addEditForm[key]
+        config: addEditForm[key]
       });
     }
     let form = (
-      <form onSubmit={this.addEditHandler}>
+      <form>
         {formElementsArray.map(formElement => {
           if (formElement.config.elementType === "input") {
             if (formElement.config.elementConfig.type === "number") {
@@ -154,10 +160,10 @@ export class AddEdit extends Component {
                     elementType={formElement.config.elementType}
                     elementConfig={formElement.config.elementConfig}
                     label={formElement.config.label}
-                    value={this.state.values[formElement.config.name]}
-                    changed={data => this.setNewVal(formElement.config.name, data)}
+                    value={values[formElement.config.name]}
+                    changed={data => setNewVal(formElement.config.name, data)}
                   />
-                  {this.state.values.id !== "" && !!this.state.values[formElement.config.name] && <Duration duration={this.state.values[formElement.config.name]}></Duration>}
+                  {values.id !== "" && !!values[formElement.config.name] && <Duration duration={values[formElement.config.name]}></Duration>}
                 </div>
               );      
             }
@@ -167,23 +173,24 @@ export class AddEdit extends Component {
                   elementType={formElement.config.elementType}
                   elementConfig={formElement.config.elementConfig}
                   label={formElement.config.label}
-                  value={this.state.values[formElement.config.name]}
-                  changed={data => this.setNewVal(formElement.config.name, data)}
+                  value={values[formElement.config.name]}
+                  changed={data => setNewVal(formElement.config.name, data)}
                 />
             );
           }
+          return <br></br>;
         })}
 
         <div className={classes.Container && classes.OneRow} style={{padding: "10px"}}>
-          <label className={classes.Label}>{this.state.addEditForm.creationDate.label}</label>
-          {!!this.state.values.creationDate &&
-            <DatePicker selected={(new Date(this.state.values[this.state.addEditForm.creationDate.name]))}
-            onChange={date => this.setNewVal(this.state.addEditForm.creationDate.name, date)} />}  
+          <label className={classes.Label}>{addEditForm.creationDate.label}</label>
+          {!!values.creationDate &&
+            <DatePicker selected={(new Date(values[addEditForm.creationDate.name]))}
+            onChange={date => setNewVal(addEditForm.creationDate.name, date)} />}  
         </div>
         
         <div>
-            <Button btnType="Regular" clicked={this.saveHandler}>Save</Button>
-            <Button btnType="Regular" clicked={this.cancelHandler}>Cancel</Button>
+            <Button btnType="Regular" clicked={saveHandler}>Save</Button>
+            <Button btnType="Regular" clicked={cancelHandler}>Cancel</Button>
         </div>
       </form>
     );
@@ -192,34 +199,18 @@ export class AddEdit extends Component {
         <header>
           <Logo height="20%"/>
           <div>
-            <p>{this.localhostService.getState().userName}</p>
-            <a href='/login' onClick={this.logOut} >log off</a>
+            <p>{localhostService.getState().userName}</p>
+            <a href='/login' onClick={logOut} >log off</a>
           </div>
         </header>
-        <p><a href='/courses'>Courses</a> -&gt; { this.state.values.title ? this.state.values.title : "New course"} </p>
-        {this.state.displayErrModal && <p>Feel all the fields</p>}
+        <p><a href='/courses'>Courses</a> -&gt; { values.title ? values.title : "New course"} </p>
+        {displayErrModal && <p>Feel all the fields</p>}
         <main>
             {form}
         </main>
       </div>
     );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    storedCourses: state.courses
-  };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-  };
-};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddEdit);
-
-// export default AddEdit;
+export default AddEdit;

@@ -40,8 +40,9 @@ fastify.get('/api/courses/:id', async (request, reply) => {
 });
 
 fastify.post('/api/courses', async (request) => {
-    const course = { id: uuidv1(), ...request.body };
-
+    const course = { ...request.body };
+    course.id = uuidv1()
+    
     db.get('courses')
         .push(course)
         .write();
