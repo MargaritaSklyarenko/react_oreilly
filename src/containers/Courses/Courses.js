@@ -36,7 +36,7 @@ const Courses = props =>  {
 
   const updateUsers = () => {
     axios.getCourses().then(res => {
-      setCourses(res.data)
+      setCourses(res.data);
       onSetCourses(res.data);
       }
     );

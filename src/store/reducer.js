@@ -2,18 +2,18 @@ import * as actionTypes from "./actions";
 // import { createSelector } from 'reselect';
 
 const { List } = require('immutable');
-const state = {};
+const initialState = {};
 
-state.courses = List([]);
+initialState.courses = List([]);
 
-const getCourses = state.courses;
+const getCourses = initialState.courses;
 // const coursesSelector = state => state.get('courses');
 /*∂const coursesSelector = createSelector(
     [getCourses],
     (courses) => courses
 );*/
 
-const reducer = (state, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_COURSES:
       return {
